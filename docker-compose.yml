@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+  snipe-it:
+    container_name: snipe-it
+    image: lscr.io/linuxserver/snipe-it:latest
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kuching
+      - APP_URL=http://localhost:8080
+      - MYSQL_PORT_3306_TCP_ADDR=mysql
+      - MYSQL_PORT_3306_TCP_PORT=3306
+      - MYSQL_DATABASE=snipe
+      - MYSQL_USER=snipe
+      - MYSQL_PASSWORD=snipe
+    volumes:
+      - /data/snipe-it/data:/config
+    ports:
+      - 8080:80
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+  
+  mariadb:
+    container_name: mysql
+    image: mariadb:latest
+    hostname: mysql
+    environment:
+      - MARIADB_ROOT_PASSWORD=maria
+      - MARIADB_DATABASE=snipe
+      - MARIADB_USER=snipe
+      - MARIADB_PASSWORD=snipe
+    restart: always
